@@ -1,0 +1,54 @@
+/* Color related vars */
+:root {
+  --bg-color: #000000;
+  --alive-cell-color: #93150c;
+  --initial-buttons-color: #cd1b5680;
+  --text-color: #ffffff;
+}
+/* Global styles */
+* {
+  text-align: center;
+  background-color: var(--bg-color);
+  font-family: Poppins, "Open Sans", sans-serif;
+}
+/*  */
+.top-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 30px;
+}
+/* Heading */
+h1 {
+  font-size: 40px;
+  color: var(--text-color);
+  margin: 0px;
+  margin-top: 15px;
+  font-weight: 400;
+  width: 100%;
+  text-align: center;
+}
+.initial-buttons {
+  width: 100%;
+  text-align: center;
+}
+/* Buttons */
+.initial-buttons > button {
+  background-color: var(--initial-buttons-color);
+  color: var(--text-color);
+  font-size: 18px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  margin: 20px;
+  font-weight: 400;
+  outline: none;
+}
+.initial-buttons > button:hover {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+}
+/* Correcting the color gap around icons */
+.fas {
+  background-color: initial;
+}

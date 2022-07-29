@@ -1,124 +1,109 @@
+// For the purpose of using css vars declared within :root
+const root = document.querySelector(":root");
 
-class GameOfLife {
+class gameOfLife {
+  constructor() {
+    this.cellSize = 5;
+    this.deadCellColor = getComputedStyle(root).getPropertyValue("--bg-color");
+    this.aliveCellColor =
+      getComputedStyle(root).getPropertyValue("--alive-cell-color");
+    this.columnsCells = Math.floor(canvas.width / this.cellSize);
+    this.rowsCells = Math.floor(canvas.height / this.cellSize);
+    // 2D array for the state of current lifecycle
+    this.activeCellsArray = [];
+    // 2D array for the state of previous lifecycle
+    this.inactiveCellsArray = [];
 
-    /*
-    functions 
-        1 - create 2 2d arrays with zeros (active/inactive) - done!
-        2 - fill active array randomly with ones and zeros - done! 
-        3 - set color for cells - done! 
-        4 - count neigbours 
-        5 - update generation 
-        6 - clear canvas
-    */
+    this.arrayInitialization = () => {
+      for (let i = 0; i < this.rowsCells; i++) {
+        this.activeCellsArray[i] = [];
+        for (let j = 0; j < this.columnsCells; j++) {
+          this.activeCellsArray[i][j] = 0;
+        }
+      }
+      this.inactiveCellsArray = this.activeCellsArray;
+    };
 
-    constructor() {
+    this.arrayRandomize = () => {
+      for (let i = 0; i < this.rowsCells; i++) {
+        for (let j = 0; j < this.columnsCells; j++) {
+          this.activeCellsArray[i][j] = Math.random() > 0.5 ? 1 : 0;
+        }
+      }
+    };
 
-        this.cell_size = 5;
-        this.dead_color = `#181818`;
-        this.alive_color = `#FF756B`;
-        this.cells_in_column = Math.floor(canvas.width / this.cell_size);
-        this.cells_in_rows = Math.floor(canvas.height / this.cell_size);
-        this.active_array = [];
-        this.inactive_array = [];
+    this.fillArray = () => {
+      for (let i = 0; i < this.rowsCells; i++) {
+        for (let j = 0; j < this.columnsCells; j++) {
+          let color;
+          if (this.activeCellsArray[i][j] == 1) color = this.aliveCellColor;
+          else color = this.deadCellColor;
+          context.fillStyle = color;
+          context.fillRect(
+            j * this.cellSize,
+            i * this.cellSize,
+            this.cellSize,
+            this.cellSize
+          );
+        }
+      }
+    };
 
-        this.arrayInitialization = () => {
+    this.setCellValueHelper = (row, col) => {
+      try {
+        return this.activeCellsArray[row][col];
+      } catch {
+        return 0;
+      }
+    };
 
-            for (let i = 0; i < this.cells_in_rows; i++) {
-                this.active_array[i] = [];
-                for (let j = 0; j < this.cells_in_column; j++) {
-                    this.active_array[i][j] = 0;
-                }
-            }
-            this.inactive_array = this.active_array;
+    this.countNeighbours = (row, col) => {
+      let total_neighbours = 0;
+      total_neighbours += this.setCellValueHelper(row - 1, col - 1);
+      total_neighbours += this.setCellValueHelper(row - 1, col);
+      total_neighbours += this.setCellValueHelper(row - 1, col + 1);
+      total_neighbours += this.setCellValueHelper(row, col - 1);
+      total_neighbours += this.setCellValueHelper(row, col + 1);
+      total_neighbours += this.setCellValueHelper(row + 1, col - 1);
+      total_neighbours += this.setCellValueHelper(row + 1, col);
+      total_neighbours += this.setCellValueHelper(row + 1, col + 1);
+      return total_neighbours;
+    };
 
-        };
+    this.updateCellValue = (row, col) => {
+      const total = this.countNeighbours(row, col);
+      // cell with more than 4 or less then 3 neighbours dies. 1 => 0; 0 => 0
+      if (total > 4 || total < 3) {
+        return 0;
+      }
+      // dead cell with 3 neighbours becomes alive. 0 => 1
+      else if (this.activeCellsArray[row][col] === 0 && total === 3) {
+        return 1;
+      }
+      // or returning its status back. 0 => 0; 1 => 1
+      else {
+        return this.activeCellsArray[row][col];
+      }
+    };
 
-        this.arrayRandomize = () => {
+    this.updateLifeCycle = () => {
+      for (let i = 0; i < this.rowsCells; i++) {
+        for (let j = 0; j < this.columnsCells; j++) {
+          let new_state = this.updateCellValue(i, j);
+          this.inactiveCellsArray[i][j] = new_state;
+        }
+      }
+      this.activeCellsArray = this.inactiveCellsArray;
+    };
 
-            for (let i = 0; i < this.cells_in_rows; i++) {
-                for (let j = 0; j < this.cells_in_column; j++) {
-                    this.active_array[i][j] = (Math.random() > 0.5) ? 1 : 0;
-                }
-            }
+    // Ends the game
+    this.gameSetUp = () => {
+      this.arrayInitialization();
+    };
 
-        };
-
-        this.fillArray = () => {
-
-            for (let i = 0; i < this.cells_in_rows; i++) {
-                for (let j = 0; j < this.cells_in_column; j++) {
-                    let color;
-                    if (this.active_array[i][j] == 1)
-                        color = this.alive_color;
-                    else
-                        color = this.dead_color;
-                    ctx.fillStyle = color;
-                    ctx.fillRect(j * this.cell_size, i * this.cell_size, this.cell_size, this.cell_size);
-                }
-            }
-
-        };
-
-        this.setCellValueHelper = (row, col) => {
-            try {
-                return this.active_array[row][col];
-            }
-            catch {
-                return 0;
-            }
-        };
-
-        this.countNeighbours = (row, col) => {
-            let total_neighbours = 0;
-            total_neighbours += this.setCellValueHelper(row - 1, col - 1);
-            total_neighbours += this.setCellValueHelper(row - 1, col);
-            total_neighbours += this.setCellValueHelper(row - 1, col + 1);
-            total_neighbours += this.setCellValueHelper(row, col - 1);
-            total_neighbours += this.setCellValueHelper(row, col + 1);
-            total_neighbours += this.setCellValueHelper(row + 1, col - 1);
-            total_neighbours += this.setCellValueHelper(row + 1, col);
-            total_neighbours += this.setCellValueHelper(row + 1, col + 1);
-            return total_neighbours;
-        };
-
-        this.updateCellValue = (row, col) => {
-
-            const total = this.countNeighbours(row, col);
-            // cell with more than 4 or less then 3 neighbours dies. 1 => 0; 0 => 0
-            if (total > 4 || total < 3) {
-                return 0;
-            }
-            // dead cell with 3 neighbours becomes alive. 0 => 1
-            else if (this.active_array[row][col] === 0 && total === 3) {
-                return 1;
-            }
-            // or returning its status back. 0 => 0; 1 => 1
-            else {
-                return this.active_array[row][col];
-            }
-
-        };
-
-        this.updateLifeCycle = () => {
-
-            for (let i = 0; i < this.cells_in_rows; i++) {
-                for (let j = 0; j < this.cells_in_column; j++) {
-                    let new_state = this.updateCellValue(i, j);
-                    this.inactive_array[i][j] = new_state;
-                }
-            }
-            this.active_array = this.inactive_array
-
-        };
-
-        this.gameSetUp = () => {
-            this.arrayInitialization();
-        };
-
-        this.runGame = () => {
-            this.updateLifeCycle();
-            this.fillArray();
-        };
-        
-    }
+    this.runGame = () => {
+      this.updateLifeCycle();
+      this.fillArray();
+    };
+  }
 }

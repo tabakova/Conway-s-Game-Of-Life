@@ -1,24 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css">
-    <title>Document</title>
-</head>
-<body>
-
-    <h1>Game of Life</h1>
-
-    <div class="buttons-div">
-        <button id="start-random">start Random</button>
-        <button id="stop">stop</button>
-    </div>
-    
-    <canvas id="gamefield" width="1400" height="500"></canvas>
-</body>
-<script src="GameOfLife.js"></script>
-<script src="index.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Conway's Game of Life</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&family=Poppins:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+      integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <section class="top-section">
+      <h1>Conway's Game of Life</h1>
+      <div class="initial-buttons">
+        <button id="start">
+          <i class="fas fa-play-circle"></i>
+          Start
+        </button>
+        <button id="stop">
+          <i class="fas fa-stop-circle"></i>
+          Stop
+        </button>
+      </div>
+    </section>
+    <canvas id="game-field" width="1400" height="500"></canvas>
+    <script src="gameOfLife.js"></script>
+    <script src="index.js"></script>
+  </body>
 </html>
